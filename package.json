@@ -6,11 +6,11 @@
   "scripts": {
     "pretest": "npm run lint",
     "test": "mocha --require config/setup-browser-env --watch-extensions tsx,ts --colors src/**/*.spec.ts*",
-    "test:watch": "npm run test:mocha -- --watch",
-    "cover": "nyc npm run test:mocha",
+    "test:watch": "npm run test -- --watch",
+    "cover": "nyc npm run test",
     "cover:watch": "nodemon --quiet --watch src --ext ts,tsx --exec npm run cover",
     "check-coverage": "nyc --check-coverage --statements 80 --branches 80 --functions 80 --lines 80 npm test",
-    "lint": "tslint \"src/**/*.tsx\" \"src/**/*.ts\"",
+    "lint": "tslint \"src/**/*.tsx\" \"src/**/*.ts\" --exclude \"src/**/*.d.ts\"",
     "start": "webpack-dev-server --env.dev --hot",
     "build": "npm run check-coverage && rimraf dist && webpack --env.prod"
   },
@@ -81,9 +81,10 @@
   },
   "dependencies": {
     "@types/core-js": "0.9.28",
-    "@types/react": "0.14.27",
+    "@types/react": "0.14.28",
     "@types/react-dom": "0.14.14",
     "react": "15.3.0",
-    "react-dom": "15.3.0"
+    "react-dom": "15.3.0",
+    "react-router": "2.6.1"
   }
 }
