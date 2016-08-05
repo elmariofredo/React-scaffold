@@ -5,6 +5,6 @@ import * as styles from './App.css';
 
 export class App extends Component<any, any> {
   render() {
-    return <div className={styles.header}>Hello from Sofia!</div>
+    return <div className={styles.header}>Hello from Sofia!</div>;
   }
 }

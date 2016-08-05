@@ -1,8 +1,8 @@
-declare module "*.css" {
-  var styles: any;
+declare module '*.css' {
+  let styles: any;
   export = styles;
 }
-declare module "*.html" {
-  var html: string;
+declare module '*.html' {
+  let html: string;
   export = html;
 }
