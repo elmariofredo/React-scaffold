@@ -1,0 +1,8 @@
+:root {
+  --mainColor: tomato;
+}
+
+.header {
+  color: var(--mainColor);
+  padding: 1em;
+}

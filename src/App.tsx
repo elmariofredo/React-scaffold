@@ -1,10 +1,19 @@
 import * as React from 'react';
-import { Component } from 'react';
+import { StatelessComponent, ReactNode } from 'react';
 
 import * as styles from './App.css';
 
-export class App extends Component<any, any> {
-  render() {
-    return <div className={styles.header}>Hello from Sofia!</div>;
-  }
+import { MenuList } from './shared/components/menu-list/MenuList';
+
+type AppProps = {
+  children?: ReactNode
 }
+
+export const App: StatelessComponent<AppProps> = ({children}) => {
+  return (
+    <div className={styles.container}>
+      <MenuList/>
+      <div>{children}</div>
+    </div>
+  );
+};
