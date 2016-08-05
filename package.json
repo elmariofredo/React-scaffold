@@ -1,13 +1,13 @@
 {
   "name": "react-scaffold",
   "version": "1.0.0",
-  "description": "An React Scaffold featuring React (Tests, Dev/Prod), Visual Basic 6.0, Ava, NYC, TypeScript, TsLint, and Webpack2 by @ngParty Team",
+  "description": "An React Scaffold featuring React (Tests, Dev/Prod), Visual Basic 6.0, Mocha, NYC, TypeScript, TsLint, and Webpack2 by @ngParty Team",
   "main": "index.js",
   "scripts": {
     "pretest": "npm run lint",
-    "test": "tsc && ava --verbose",
-    "test:watch": "tsc -w & ava --verbose --watch",
-    "cover": "nyc npm test",
+    "test": "mocha --require config/setup-browser-env --watch-extensions tsx,ts --colors src/**/*.spec.ts*",
+    "test:watch": "npm run test:mocha -- --watch",
+    "cover": "nyc npm run test:mocha",
     "cover:watch": "nodemon --quiet --watch src --ext ts,tsx --exec npm run cover",
     "check-coverage": "nyc --check-coverage --statements 80 --branches 80 --functions 80 --lines 80 npm test",
     "lint": "tslint \"src/**/*.tsx\" \"src/**/*.ts\"",
@@ -30,46 +30,50 @@
     "url": "https://github.com/ngParty/React-scaffold/issues"
   },
   "homepage": "https://github.com/ngParty/React-scaffold#readme",
-  "ava": {
-    "files": [
-      "ts-output/**/*.test.js"
-    ],
-    "require": [
-      "./config/setup-browser-env.js"
-    ]
-  },
   "nyc": {
     "reporter": [
       "lcov",
       "text",
       "html"
     ],
+    "extension": [
+      ".tsx",
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.spec.ts",
+      "**/*.spec.tsx"
+    ],
     "include": [
-      "ts-output/src/**"
+      "src/**"
     ]
   },
   "devDependencies": {
+    "@types/chai": "3.4.30",
     "@types/enzyme": "2.4.30",
+    "@types/mocha": "2.2.29",
     "@types/react-addons-test-utils": "0.14.14",
     "@types/sinon": "1.16.26",
-    "ava": "0.15.2",
     "awesome-typescript-loader": "2.1.1",
+    "chai": "3.5.0",
     "css-loader": "0.23.1",
     "enzyme": "2.4.1",
     "extract-text-webpack-plugin": "2.0.0-beta.3",
     "html-webpack-plugin": "2.22.0",
     "jsdom": "9.4.1",
+    "mocha": "3.0.1",
     "nodemon": "1.10.0",
     "nyc": "7.1.0",
-    "progress-bar-webpack-plugin": "1.9.0",
     "postcss-cssnext": "2.7.0",
     "postcss-loader": "0.9.1",
+    "progress-bar-webpack-plugin": "1.9.0",
     "react-addons-test-utils": "15.3.0",
     "rimraf": "2.5.4",
     "sinon": "1.17.5",
+    "style-loader": "0.13.1",
+    "ts-node": "1.2.2",
     "tslint": "3.14.0",
     "tslint-react": "0.4.0",
-    "style-loader": "0.13.1",
     "typescript": "2.0.0",
     "webpack": "2.1.0-beta.20",
     "webpack-config-utils": "2.0.0",

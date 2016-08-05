@@ -4,4 +4,4 @@
 [![GitHub license](https://img.shields.io/badge/license-ISC-blue.svg)](https://raw.githubusercontent.com/ngParty/React-scaffold/master/LICENSE)
 
 # React-scaffold
- An React Scaffold featuring React (Tests, Dev/Prod), Visual Basic 6.0, Ava, Istanbul, TypeScript, TsLint, and Webpack2 by @ngParty Team
+ An React Scaffold featuring React (Tests, Dev/Prod), Visual Basic 6.0, Mocha, NYC, TypeScript, TsLint, and Webpack2 by @ngParty Team

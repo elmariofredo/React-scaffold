@@ -109,7 +109,7 @@ module.exports = (env) => {
 
       // We use ExtractTextPlugin so we get a seperate CSS file instead
       // of the CSS being in the JS and injected as a style tag
-      ifProd( new ExtractTextPlugin( '[name].[contenthash].css' ) )
+      ifProd( new ExtractTextPlugin( '[name].[contenthash].css' ) ),
 
       // Deduplicate node modules dependencies
       ifProd(new webpack.optimize.DedupePlugin()),
