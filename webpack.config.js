@@ -1,11 +1,21 @@
-const {resolve} = require('path')
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const {getIfUtils, removeEmpty} = require('webpack-config-utils')
-const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const { resolve } = require('path');
 
-module.exports = env => {
-  const {ifProd, ifNotProd} = getIfUtils(env)
+const webpack = require('webpack');
+
+// plugins
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+
+// PostCSS plugins
+const cssnext = require('postcss-cssnext');
+
+// webpack config helpers
+const { getIfUtils, removeEmpty, combineLoaders } = require('webpack-config-utils');
+
+module.exports = (env) => {
+  const { ifProd, ifNotProd } = getIfUtils(env);
+
   return {
     context: resolve('src'),
     entry: {
@@ -31,8 +41,41 @@ module.exports = env => {
 
     module: {
       loaders: [
-        {test: /\.tsx?$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/},
-        {test: /\.css$/, loaders: ['style', 'css']},
+        // Typescript
+        { test: /\.tsx?$/, loaders: [ 'awesome-typescript-loader' ], exclude: /node_modules/ },
+        // CSS
+        {
+          test: /\.css$/,
+          loaders: ifNotProd(
+            combineLoaders( [
+              { loader: 'style-loader' },
+              {
+                loader: 'css-loader',
+                query: {
+                  modules: true,
+                  importLoaders: 1,
+                  localIdentName: '[name]__[local]___[hash:base64:5]',
+                  sourceMap: true
+                }
+              },
+              { loader: 'postcss-loader' }
+            ] ),
+            ExtractTextPlugin.extract( {
+              fallbackLoader: 'style-loader',
+              loader: combineLoaders( [
+                {
+                  loader: 'css-loader',
+                  query: {
+                    modules: true,
+                    importLoaders: 1,
+                    localIdentName: '[name]__[local]___[hash:base64:5]'
+                  }
+                },
+                { loader: 'postcss-loader' }
+              ] )
+            } )
+          )
+        }
       ],
     },
 
@@ -64,6 +107,10 @@ module.exports = env => {
         name: 'inline',
       })),
 
+      // We use ExtractTextPlugin so we get a seperate CSS file instead
+      // of the CSS being in the JS and injected as a style tag
+      ifProd( new ExtractTextPlugin( '[name].[contenthash].css' ) )
+
       // Deduplicate node modules dependencies
       ifProd(new webpack.optimize.DedupePlugin()),
 
@@ -83,5 +130,12 @@ module.exports = env => {
       }))
 
     ]),
+
+    // plugins config
+    postcss: [
+      cssnext({ // Allow future CSS features to be used, also auto-prefixes the CSS...
+        browsers: ['last 2 versions', 'IE > 10'], // ...based on this browser list
+      })
+    ]
   }
-}
+};
