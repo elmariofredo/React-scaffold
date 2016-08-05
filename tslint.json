@@ -1,5 +1,5 @@
 {
-  "extends": ["tslint:latest", "tslint-react"],
+  "extends": ["tslint-react"],
   "rules": {
 
     "jsx-no-lambda": true,
@@ -118,6 +118,8 @@
     "no-invalid-this": [
       true,
       "check-function-in-method"
-    ]
+    ],
+    "ordered-imports": false,
+    "interface-name": false
   }
 }
