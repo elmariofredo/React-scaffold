@@ -83,6 +83,7 @@
     "@types/core-js": "0.9.28",
     "@types/react": "0.14.28",
     "@types/react-dom": "0.14.14",
+    "@types/systemjs": "0.19.28",
     "react": "15.3.0",
     "react-dom": "15.3.0",
     "react-router": "2.6.1"

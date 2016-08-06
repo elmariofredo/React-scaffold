@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export const FAQ = () => {
+export const Faq = () => {
   return (
     <div>
       <h2>FAQ</h2>
