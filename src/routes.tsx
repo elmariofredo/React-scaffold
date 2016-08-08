@@ -12,12 +12,8 @@ const loadModule = ( cb ) => ( componentModule ) => {
 };
 
 type ComponentModule = {
-  [key: string]: Function | React.ComponentClass<any> | React.StatelessComponent<any>
-}
-
-const getObjectFirstKey = (module: ComponentModule ) => Object.keys( module )[0];
-
-const removeLeadingSlash = ( routePath: string ) => routePath.substring( 1 );
+  'default': Function | React.ComponentClass<any> | React.StatelessComponent<any>
+};
 
 export function createRoutes( /*store*/ ): RouteConfig[] {
   // Create reusable async injectors using getAsyncInjectors factory
@@ -28,9 +24,9 @@ export function createRoutes( /*store*/ ): RouteConfig[] {
       path: '*',
       getComponent( nextState, cb ) {
 
-        System.import( `./${ removeLeadingSlash( nextState.location.pathname ) }/index` )
+        System.import( `.${ nextState.location.pathname }/index` )
           .then( ( module: ComponentModule ) => {
-            loadModule( cb )( module[ getObjectFirstKey( module ) ] );
+            loadModule( cb )( module.default );
           } )
           .catch( ( err: any ) => {
 
