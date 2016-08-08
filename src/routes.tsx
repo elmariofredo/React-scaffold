@@ -11,6 +11,8 @@ const loadModule = ( cb ) => ( componentModule ) => {
 
 const getObjectFirstKey = ( object ) => Object.keys( object )[0];
 
+const removeLeadingSlash = ( routePath ) => routePath.slice( 1 );
+
 export function createRoutes( /*store*/ ): RouteConfig[] {
   // Create reusable async injectors using getAsyncInjectors factory
   // const { injectReducer, injectSagas } = getAsyncInjectors(store); // eslint-disable-line no-unused-vars
@@ -20,7 +22,7 @@ export function createRoutes( /*store*/ ): RouteConfig[] {
       path: '*',
       getComponent( nextState, cb ) {
 
-        System.import( `./${nextState.location.pathname.slice(1)}/index` )
+        System.import( `./${ removeLeadingSlash( nextState.location.pathname ) }/index` )
           .then( ( component ) => {
             loadModule( cb )( component[ getObjectFirstKey( component ) ] );
           } )
