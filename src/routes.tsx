@@ -9,6 +9,8 @@ const loadModule = ( cb ) => ( componentModule ) => {
   cb( null, componentModule );
 };
 
+const getObjectFirstKey = ( object ) => Object.keys( object )[0];
+
 export function createRoutes( /*store*/ ): RouteConfig[] {
   // Create reusable async injectors using getAsyncInjectors factory
   // const { injectReducer, injectSagas } = getAsyncInjectors(store); // eslint-disable-line no-unused-vars
@@ -17,26 +19,18 @@ export function createRoutes( /*store*/ ): RouteConfig[] {
     {
       path: '*',
       getComponent( nextState, cb ) {
-        const importModules = Promise.all( [
-          System.import( `./${nextState.location.pathname.slice(1)}/index` ),
-        ] );
 
-        const renderRoute = loadModule( cb );
+        System.import( `./${nextState.location.pathname.slice(1)}/index` )
+          .then( ( component ) => {
+            loadModule( cb )( component[ getObjectFirstKey( component ) ] );
+          } )
+          .catch( ( err: any ) => {
 
-        importModules.then( ( [
-          component ] ) => {
-          renderRoute( component[ Object.keys( component )[0] ] );
-        } );
+            console.error( 'Dynamic page loading failed', err );
 
-        importModules.catch( ( err: any ) => {
+            loadModule( cb )( NotFound );
 
-          console.error( 'Dynamic page loading failed', err );
-
-          loadModule( cb )( NotFound );
-
-        } );
-
-        return importModules;
+          } );
 
       }
     }
