@@ -3,15 +3,21 @@ import { hashHistory, Router, RouteConfig } from 'react-router';
 
 import { App } from './App';
 import { Home } from './home';
-import { NotFound } from './not-found/NotFound';
+import { NotFound } from './not-found';
+import StatelessComponent = React.StatelessComponent;
+import Component = React.Component;
 
 const loadModule = ( cb ) => ( componentModule ) => {
   cb( null, componentModule );
 };
 
-const getObjectFirstKey = ( object ) => Object.keys( object )[0];
+type ComponentModule = {
+  [key: string]: Function | React.ComponentClass<any> | React.StatelessComponent<any>
+}
 
-const removeLeadingSlash = ( routePath ) => routePath.slice( 1 );
+const getObjectFirstKey = (module: ComponentModule ) => Object.keys( module )[0];
+
+const removeLeadingSlash = ( routePath: string ) => routePath.substring( 1 );
 
 export function createRoutes( /*store*/ ): RouteConfig[] {
   // Create reusable async injectors using getAsyncInjectors factory
@@ -23,8 +29,8 @@ export function createRoutes( /*store*/ ): RouteConfig[] {
       getComponent( nextState, cb ) {
 
         System.import( `./${ removeLeadingSlash( nextState.location.pathname ) }/index` )
-          .then( ( component ) => {
-            loadModule( cb )( component[ getObjectFirstKey( component ) ] );
+          .then( ( module: ComponentModule ) => {
+            loadModule( cb )( module[ getObjectFirstKey( module ) ] );
           } )
           .catch( ( err: any ) => {
 
