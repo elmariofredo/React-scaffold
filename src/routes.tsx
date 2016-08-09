@@ -4,12 +4,6 @@ import { hashHistory, Router, RouteConfig } from 'react-router';
 import { App } from './App';
 import { Home } from './home';
 import { NotFound } from './not-found';
-import StatelessComponent = React.StatelessComponent;
-import Component = React.Component;
-
-const loadModule = ( cb ) => ( componentModule ) => {
-  cb( null, componentModule );
-};
 
 type ComponentModule = {
   'default': Function | React.ComponentClass<any> | React.StatelessComponent<any>
@@ -22,17 +16,19 @@ export function createRoutes( /*store*/ ): RouteConfig[] {
   return [
     {
       path: '*',
-      getComponent( nextState, cb ) {
+      getComponent( nextState: any, callback: ( error: Error, module: any ) => void ) {
 
         System.import( `.${ nextState.location.pathname }/index` )
           .then( ( module: ComponentModule ) => {
-            loadModule( cb )( module.default );
+
+            callback( null, module.default );
+
           } )
           .catch( ( err: any ) => {
 
             console.error( 'Dynamic page loading failed', err );
 
-            loadModule( cb )( NotFound );
+            callback( null, NotFound );
 
           } );
 
