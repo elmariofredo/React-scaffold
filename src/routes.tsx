@@ -4,20 +4,10 @@ import { hashHistory, Router, RouteConfig } from 'react-router';
 import { App } from './App';
 import { Home } from './home';
 import { NotFound } from './not-found';
-import StatelessComponent = React.StatelessComponent;
-import Component = React.Component;
-
-const loadModule = ( cb ) => ( componentModule ) => {
-  cb( null, componentModule );
-};
 
 type ComponentModule = {
-  [key: string]: Function | React.ComponentClass<any> | React.StatelessComponent<any>
-}
-
-const getObjectFirstKey = (module: ComponentModule ) => Object.keys( module )[0];
-
-const removeLeadingSlash = ( routePath: string ) => routePath.substring( 1 );
+  'default': Function | React.ComponentClass<any> | React.StatelessComponent<any>
+};
 
 export function createRoutes( /*store*/ ): RouteConfig[] {
   // Create reusable async injectors using getAsyncInjectors factory
@@ -26,17 +16,19 @@ export function createRoutes( /*store*/ ): RouteConfig[] {
   return [
     {
       path: '*',
-      getComponent( nextState, cb ) {
+      getComponent( nextState: any, callback: ( error: Error, module: any ) => void ) {
 
-        System.import( `./${ removeLeadingSlash( nextState.location.pathname ) }/index` )
+        System.import( `.${ nextState.location.pathname }/index` )
           .then( ( module: ComponentModule ) => {
-            loadModule( cb )( module[ getObjectFirstKey( module ) ] );
+
+            callback( null, module.default );
+
           } )
           .catch( ( err: any ) => {
 
             console.error( 'Dynamic page loading failed', err );
 
-            loadModule( cb )( NotFound );
+            callback( null, NotFound );
 
           } );
 

@@ -6,3 +6,5 @@ export const NotFound: StatelessComponent<void> = () => {
     <div>Not Found baby!</div>
   );
 };
+
+export default NotFound;
