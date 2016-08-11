@@ -1,17 +1,12 @@
 import * as React from 'react';
-import { hashHistory, IndexRoute, Router, Route, RouteConfig } from 'react-router';
+import { hashHistory, Router, RouteConfig } from 'react-router';
 
 import { App } from './App';
 import { Home } from './home';
-import { About } from './about';
-import { Faq } from './faq';
+import { NotFound } from './not-found';
 
-const errorLoading = ( err: any ) => {
-  console.error( 'Dynamic page loading failed', err );
-};
-
-const loadModule = ( cb ) => ( componentModule ) => {
-  cb( null, componentModule );
+type ComponentModule = {
+  'default': Function | React.ComponentClass<any> | React.StatelessComponent<any>
 };
 
 export function createRoutes( /*store*/ ): RouteConfig[] {
@@ -19,67 +14,25 @@ export function createRoutes( /*store*/ ): RouteConfig[] {
   // const { injectReducer, injectSagas } = getAsyncInjectors(store); // eslint-disable-line no-unused-vars
 
   return [
-    // {
-    //   // path: '/',
-    //   // name: 'home',
-    //   // component: Home
-    //
-    //   // getComponent( nextState, cb ) {
-    //   //   const importModules = Promise.all( [
-    //   //     System.import( './home/Home' ),
-    //   //   ] );
-    //   //
-    //   //   const renderRoute = loadModule( cb );
-    //   //
-    //   //   importModules.then( ( [component] ) => {
-    //   //     renderRoute( component );
-    //   //   } );
-    //   //
-    //   //   importModules.catch( errorLoading );
-    //   // },
-    // },
-    {
-      path: 'about',
-      // name: 'about',
-      getComponent( nextState, cb ) {
-        const importModules = Promise.all( [
-          System.import( './about/About' ),
-        ] );
-
-        const renderRoute = loadModule( cb );
-
-        importModules.then( ( [component] ) => {
-          renderRoute( component.About );
-        } );
-
-        importModules.catch( errorLoading );
-      },
-    },
-    {
-      path: 'faq',
-      // name: 'faq',
-      getComponent( nextState, cb ) {
-        const importModules = Promise.all( [
-          System.import( './faq/Faq' ),
-        ] );
-
-        const renderRoute = loadModule( cb );
-
-        importModules.then( ( [component] ) => {
-          renderRoute( component.Faq );
-        } );
-
-        importModules.catch( errorLoading );
-      }
-    },
     {
       path: '*',
-      // name: 'notfound',
-      getComponent( nextState, cb ) {
-        System.import( './not-found/NotFound' )
-          .then( loadModule( cb ) )
-          .catch( errorLoading );
-      },
+      getComponent( nextState: any, callback: ( error: Error, module: any ) => void ) {
+
+        System.import( `.${ nextState.location.pathname }/index` )
+          .then( ( module: ComponentModule ) => {
+
+            callback( null, module.default );
+
+          } )
+          .catch( ( err: any ) => {
+
+            console.error( 'Dynamic page loading failed', err );
+
+            callback( null, NotFound );
+
+          } );
+
+      }
     }
   ];
 }
